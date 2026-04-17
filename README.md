@@ -1,5 +1,3 @@
-***
-
 # Vector Playground
 
 Vector Playground is an interactive, web-based visualizer for a custom-built, bare-metal C autograd and tensor engine. By compiling the core C operations to WebAssembly (Wasm), this project achieves near-native execution speeds for tensor mathematics and neural network training directly within the browser.
