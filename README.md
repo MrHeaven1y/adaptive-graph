@@ -1,3 +1,7 @@
+<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/75c6257b-f2f8-4f35-b919-543c84b5d699" />
+
+Live Demo:  https://mrheaven1y.github.io/adaptive-graph/
+
 # Vector Playground
 
 Vector Playground is an interactive, web-based visualizer for a custom-built, bare-metal C autograd and tensor engine. By compiling the core C operations to WebAssembly (Wasm), this project achieves near-native execution speeds for tensor mathematics and neural network training directly within the browser.
@@ -66,7 +70,3 @@ adaptive-graph/
 
 **Dibyendu Mukherjee**
 * Contact: dibyendumukherjee916@gmail.con
-
-Live Demo:  https://mrheaven1y.github.io/adaptive-graph/
-
-<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/39524052-aaf2-4df9-a5b0-b73a3d334cf2" />
