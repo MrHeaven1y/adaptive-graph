@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>vector playground</title>
+        <style>
+            /* ── tokens ─────────────────────────────────────────────── */
+            :root {
+                --bg: #090e14;
+                --bg2: #0d1520;
+                --bg3: #111d2c;
+                --b1: #2e4060;
+                --b2: #1e3050;
+                --b3: #152038;
+                --t1: #d8e4f0;
+                --t2: #6a84a8;
+                --t3: #344a68;
+                --acc: #5dcaa5;
+                --warm: #d85a30;
+                --acc2: rgba(93, 202, 165, 0.18);
+                --warm2: rgba(216, 90, 48, 0.18);
+                --r: 5px;
+                --font:
+                    "JetBrains Mono", "Cascadia Code", "Fira Code", monospace;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                background: var(--bg);
+                color: var(--t1);
+                font-family: var(--font);
+                overflow: hidden;
+                font-size: 11px;
+            }
+
+            /* ── layout ─────────────────────────────────────────────── */
+            .app {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                width: 100%; /* Force it to span the whole screen */
+                padding: 10px;
+                gap: 7px;
+            }
+
+            .topbar {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-shrink: 0;
+                height: 28px;
+            }
+            .logo {
+                font-size: 13px;
+                font-weight: 600;
+                letter-spacing: -0.6px;
+                white-space: nowrap;
+            }
+            .logo em {
+                color: var(--acc);
+                font-style: normal;
+            }
+            .divider {
+                width: 0.5px;
+                height: 14px;
+                background: var(--b2);
+                flex-shrink: 0;
+            }
+            .tagline {
+                font-size: 8px;
+                letter-spacing: 2.5px;
+                color: var(--t3);
+                white-space: nowrap;
+            }
+            .sp {
+                flex: 1;
+            }
+            .kbd {
+                font-size: 8px;
+                color: var(--t3);
+                border: 0.5px solid var(--b2);
+                padding: 2px 6px;
+                border-radius: 3px;
+                letter-spacing: 0.5px;
+            }
+            #wasmBadge {
+                font-size: 8px;
+                padding: 3px 8px;
+                border-radius: var(--r);
+                border: 0.5px solid var(--b2);
+                color: var(--t3);
+                letter-spacing: 1.5px;
+                transition: all 0.3s;
+            }
+            #wasmBadge.on {
+                color: var(--acc);
+                border-color: rgba(93, 202, 165, 0.35);
+                background: rgba(93, 202, 165, 0.06);
+            }
+
+            .main {
+                display: flex;
+                gap: 7px;
+                flex: 1;
+                min-height: 0;
+            }
+
+            /* ── sidebar ─────────────────────────────────────────────── */
+            .sidebar {
+                width: 152px;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .panel {
+                background: var(--bg2);
+                border: 0.5px solid var(--b3);
+                border-radius: var(--r);
+                padding: 10px;
+            }
+            .pt {
+                font-size: 7.5px;
+                letter-spacing: 2.5px;
+                color: var(--t3);
+                margin-bottom: 8px;
+            }
+
+            .dsbtn {
+                display: block;
+                width: 100%;
+                background: transparent;
+                border: 0.5px solid var(--b3);
+                color: var(--t2);
+                font-family: var(--font);
+                font-size: 10px;
+                padding: 5px 7px;
+                border-radius: var(--r);
+                cursor: pointer;
+                text-align: left;
+                margin-bottom: 3px;
+                transition: all 0.12s;
+            }
+            .dsbtn:hover {
+                border-color: var(--b2);
+                color: var(--t1);
+                background: var(--bg3);
+            }
+            .dsbtn.active {
+                border-color: var(--acc);
+                color: var(--acc);
+                background: var(--acc2);
+            }
+
+            .prow {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 2px;
+            }
+            .pl {
+                font-size: 8.5px;
+                color: var(--t2);
+            }
+            .pv {
+                font-size: 10px;
+                color: var(--t1);
+            }
+            input[type="range"] {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 2px;
+                background: var(--b2);
+                border-radius: 1px;
+                outline: none;
+                margin: 3px 0 9px;
+                display: block;
+                cursor: pointer;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: var(--acc);
+                cursor: pointer;
+                transition: transform 0.1s;
+            }
+            input[type="range"]:hover::-webkit-slider-thumb {
+                transform: scale(1.25);
+            }
+
+            .crow {
+                display: flex;
+                gap: 4px;
+                margin-bottom: 4px;
+            }
+            .btn {
+                flex: 1;
+                background: transparent;
+                border: 0.5px solid var(--b2);
+                color: var(--t2);
+                font-family: var(--font);
+                font-size: 9px;
+                padding: 6px 4px;
+                border-radius: var(--r);
+                cursor: pointer;
+                transition: all 0.12s;
+                letter-spacing: 0.5px;
+                white-space: nowrap;
+            }
+            .btn:hover {
+                border-color: var(--b1);
+                color: var(--t1);
+                background: var(--bg3);
+            }
+            .btn.go {
+                border-color: var(--acc);
+                color: var(--acc);
+            }
+            .btn.go:hover {
+                background: var(--acc2);
+            }
+            .btn.stp {
+                border-color: var(--warm);
+                color: var(--warm);
+            }
+            .btn.stp:hover {
+                background: var(--warm2);
+            }
+            #resetBtn {
+                width: 100%;
+            }
+
+            .strow {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 4px;
+            }
+            .stl {
+                font-size: 8.5px;
+                color: var(--t3);
+            }
+            .stv {
+                font-size: 10px;
+                color: var(--t1);
+            }
+            .stv.good {
+                color: var(--acc);
+            }
+            .stv.bad {
+                color: var(--warm);
+            }
+
+            /* ── heatmap ─────────────────────────────────────────────── */
+            .hmwrap {
+                flex: 1;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+            }
+            .hmpanel {
+                flex: 1;
+                min-height: 0;
+                background: var(--bg2);
+                border: 0.5px solid var(--b3);
+                border-radius: var(--r);
+                position: relative;
+                overflow: hidden;
+            }
+            #hc {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+
+            /* ── right col ───────────────────────────────────────────── */
+            .rcol {
+                width: 172px;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+            }
+            .losspanel {
+                background: var(--bg2);
+                border: 0.5px solid var(--b3);
+                border-radius: var(--r);
+                padding: 10px;
+            }
+            #lc {
+                display: block;
+                width: 100%;
+                border-radius: 3px;
+                margin-top: 5px;
+            }
+
+            .archpanel {
+                flex: 1;
+                min-height: 0;
+                background: var(--bg2);
+                border: 0.5px solid var(--b3);
+                border-radius: var(--r);
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+            }
+            #ac {
+                flex: 1;
+                min-height: 0;
+                width: 100%;
+                display: block;
+            }
+
+            /* ── statusbar ───────────────────────────────────────────── */
+            .statusbar {
+                font-size: 8px;
+                color: var(--t3);
+                letter-spacing: 0.5px;
+                padding: 0 3px;
+                flex-shrink: 0;
+                display: flex;
+                gap: 14px;
+            }
+            .statusbar span {
+                color: var(--t2);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app">
+            <!-- topbar -->
+            <div class="topbar">
+                <div class="logo">◈ vector <em>playground</em></div>
+                <div class="divider"></div>
+                <div class="tagline">C AUTOGRAD ENGINE</div>
+                <div class="sp"></div>
+                <div class="kbd">space = play/pause &nbsp; R = reset</div>
+                <div id="wasmBadge">WASM: OFF</div>
+            </div>
+
+            <div class="main">
+                <!-- sidebar -->
+                <div class="sidebar">
+                    <div class="panel">
+                        <div class="pt">// DATASET</div>
+                        <button class="dsbtn active" data-ds="xor">XOR</button>
+                        <button class="dsbtn" data-ds="circles">Circles</button>
+                        <button class="dsbtn" data-ds="checker">Checker</button>
+                        <button class="dsbtn" data-ds="spiral">Spiral</button>
+                    </div>
+
+                    <div class="panel">
+                        <div class="pt">// HYPERPARAMS</div>
+                        <div class="prow">
+                            <span class="pl">learning rate</span
+                            ><span class="pv" id="lrLbl">0.030</span>
+                        </div>
+                        <input
+                            type="range"
+                            id="lrSl"
+                            min="-3.5"
+                            max="-0.3"
+                            step="0.05"
+                            value="-1.52"
+                        />
+                        <div class="prow">
+                            <span class="pl">architecture</span
+                            ><span class="pv" id="archLbl">4</span>
+                        </div>
+                        <div class="crow" style="margin-bottom: 8px">
+                            <button class="btn" id="addLayerBtn">
+                                + add layer
+                            </button>
+                            <button class="btn" id="remLayerBtn">
+                                - remove layer
+                            </button>
+                        </div>
+                        <div id="layerSliders"></div>
+                        <div class="prow">
+                            <span class="pl">train speed</span
+                            ><span class="pv" id="spdLbl">10/f</span>
+                        </div>
+                        <input
+                            type="range"
+                            id="spdSl"
+                            min="1"
+                            max="80"
+                            step="1"
+                            value="10"
+                        />
+                    </div>
+
+                    <div class="panel">
+                        <div class="pt">// CONTROL</div>
+                        <div class="crow">
+                            <button class="btn go" id="playBtn">▶ play</button>
+                            <button class="btn stp" id="stopBtn">■ stop</button>
+                        </div>
+                        <button class="btn" id="resetBtn">
+                            ↺ reset weights
+                        </button>
+                    </div>
+
+                    <div class="panel">
+                        <div class="pt">// LIVE STATS</div>
+                        <div class="strow">
+                            <span class="stl">epoch</span
+                            ><span class="stv" id="stEp">0</span>
+                        </div>
+                        <div class="strow">
+                            <span class="stl">loss</span
+                            ><span class="stv" id="stLoss">—</span>
+                        </div>
+                        <div class="strow">
+                            <span class="stl">accuracy</span
+                            ><span class="stv" id="stAcc">—</span>
+                        </div>
+                        <div class="strow">
+                            <span class="stl">engine</span
+                            ><span class="stv" id="stEng">js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- heatmap -->
+                <div class="hmwrap">
+                    <div class="hmpanel"><canvas id="hc"></canvas></div>
+                </div>
+
+                <!-- right column -->
+                <div class="rcol">
+                    <div class="losspanel">
+                        <div class="pt">// LOSS CURVE</div>
+                        <canvas id="lc" height="88"></canvas>
+                    </div>
+                    <div class="archpanel">
+                        <div class="pt">// ARCHITECTURE</div>
+                        <canvas id="ac"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="statusbar">
+                dataset: <span id="stDs">XOR (4 pts)</span>
+                &nbsp;|&nbsp;
+                <span id="stMsg">press play or spacebar to begin training</span>
+            </div>
+        </div>
+        <script>
+            // ═══════════════════════════════════════════════════════════
+            //  DATASETS
+            // ═══════════════════════════════════════════════════════════
+            const DS = {};
+
+            DS.xor = {
+                label: "XOR",
+                pts: 4,
+                x0: [0, 0, 1, 1],
+                x1: [0, 1, 0, 1],
+                y: [0, 1, 1, 0],
+            };
+
+            (() => {
+                const x0 = [],
+                    x1 = [],
+                    y = [];
+                for (let i = 0; i < 7; i++) {
+                    const a = (i / 7) * Math.PI * 2;
+                    x0.push(Math.cos(a) * 0.6);
+                    x1.push(Math.sin(a) * 0.6);
+                    y.push(0);
+                }
+                for (let i = 0; i < 7; i++) {
+                    const a = ((i + 0.5) / 7) * Math.PI * 2;
+                    x0.push(Math.cos(a) * 1.55);
+                    x1.push(Math.sin(a) * 1.55);
+                    y.push(1);
+                }
+                DS.circles = { label: "Circles", pts: 14, x0, x1, y };
+            })();
+
+            (() => {
+                const x0 = [],
+                    x1 = [],
+                    y = [];
+                const pts = [
+                    [-1, -1],
+                    [-1, 0],
+                    [-1, 1],
+                    [0, -1],
+                    [0, 0],
+                    [0, 1],
+                    [1, -1],
+                    [1, 0],
+                    [1, 1],
+                ];
+                for (const [a, b] of pts) {
+                    x0.push(a * 0.88 + (Math.random() - 0.5) * 0.1);
+                    x1.push(b * 0.88 + (Math.random() - 0.5) * 0.1);
+                    y.push((((a + b + 10) % 2) + 2) % 2);
+                }
+                DS.checker = { label: "Checker", pts: 9, x0, x1, y };
+            })();
+
+            (() => {
+                const x0 = [],
+                    x1 = [],
+                    y = [];
+                for (let i = 0; i < 10; i++) {
+                    const t = i / 10,
+                        a = t * Math.PI * 3.2,
+                        r = 0.25 + t * 1.7;
+                    x0.push(r * Math.cos(a) + (Math.random() - 0.5) * 0.1);
+                    x1.push(r * Math.sin(a) + (Math.random() - 0.5) * 0.1);
+                    y.push(0);
+                    x0.push(
+                        r * Math.cos(a + Math.PI) + (Math.random() - 0.5) * 0.1,
+                    );
+                    x1.push(
+                        r * Math.sin(a + Math.PI) + (Math.random() - 0.5) * 0.1,
+                    );
+                    y.push(1);
+                }
+                DS.spiral = { label: "Spiral", pts: 20, x0, x1, y };
+            })();
+
+            // ═══════════════════════════════════════════════════════════
+            //  JS MLP  (always available — WASM replaces when loaded)
+            // ═══════════════════════════════════════════════════════════
+            class JSNet {
+                constructor(layerSizes, lr) {
+                    // layerSizes: array of hidden neuron counts e.g. [4] or [8, 4]
+                    this.sizes = [2, ...layerSizes, 1];
+                    this.lr = lr;
+                    const g = (a, b) =>
+                        (Math.random() * 2 - 1) * Math.sqrt(6 / (a + b));
+                    this.W = [];
+                    this.b = [];
+                    for (let l = 0; l < this.sizes.length - 1; l++) {
+                        const fi = this.sizes[l],
+                            fo = this.sizes[l + 1];
+                        this.W.push(
+                            Array.from({ length: fo * fi }, () => g(fi, fo)),
+                        );
+                        this.b.push(new Array(fo).fill(0));
+                    }
+                }
+                _act(x, last) {
+                    return last ? 1 / (1 + Math.exp(-x)) : Math.tanh(x);
+                }
+                _dact(y, last) {
+                    return last ? y * (1 - y) : 1 - y * y;
+                }
+                fwd(x0, x1) {
+                    let a = [x0, x1];
+                    const acts = [a];
+                    for (let l = 0; l < this.W.length; l++) {
+                        const fi = this.sizes[l],
+                            fo = this.sizes[l + 1],
+                            last = l === this.W.length - 1;
+                        const next = new Array(fo);
+                        for (let j = 0; j < fo; j++) {
+                            let z = this.b[l][j];
+                            for (let i = 0; i < fi; i++)
+                                z += this.W[l][j * fi + i] * a[i];
+                            next[j] = this._act(z, last);
+                        }
+                        a = next;
+                        acts.push(a);
+                    }
+                    return { acts, out: a[0] };
+                }
+                train(ds) {
+                    const { lr } = this,
+                        N = ds.x0.length;
+                    const dW = this.W.map((w) => new Array(w.length).fill(0));
+                    const db = this.b.map((b) => new Array(b.length).fill(0));
+                    let L = 0;
+                    for (let s = 0; s < N; s++) {
+                        const { acts, out } = this.fwd(ds.x0[s], ds.x1[s]);
+                        const y = ds.y[s];
+                        L += (out - y) ** 2;
+                        // output delta
+                        let delta = [(out - y) * this._dact(out, true)];
+                        // backprop
+                        for (let l = this.W.length - 1; l >= 0; l--) {
+                            const fi = this.sizes[l],
+                                fo = this.sizes[l + 1];
+                            const newDelta = new Array(fi).fill(0);
+                            for (let j = 0; j < fo; j++) {
+                                db[l][j] += delta[j];
+                                for (let i = 0; i < fi; i++) {
+                                    dW[l][j * fi + i] += delta[j] * acts[l][i];
+                                    newDelta[i] +=
+                                        delta[j] * this.W[l][j * fi + i];
+                                }
+                            }
+                            if (l > 0) {
+                                for (let i = 0; i < fi; i++)
+                                    newDelta[i] *= this._dact(
+                                        acts[l][i],
+                                        false,
+                                    );
+                            }
+                            delta = newDelta;
+                        }
+                    }
+                    for (let l = 0; l < this.W.length; l++) {
+                        for (let k = 0; k < this.W[l].length; k++)
+                            this.W[l][k] -= (lr * dW[l][k]) / N;
+                        for (let k = 0; k < this.b[l].length; k++)
+                            this.b[l][k] -= (lr * db[l][k]) / N;
+                    }
+                    return L / N;
+                }
+                predictGrid(gx0, gx1) {
+                    return gx0.map((x, i) => this.fwd(x, gx1[i]).out);
+                }
+                accuracy(ds) {
+                    let ok = 0;
+                    for (let i = 0; i < ds.x0.length; i++)
+                        if (
+                            Math.round(this.fwd(ds.x0[i], ds.x1[i]).out) ===
+                            ds.y[i]
+                        )
+                            ok++;
+                    return ok / ds.x0.length;
+                }
+                weights() {
+                    return { W: this.W, sizes: this.sizes };
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            //  STATE
+            // ═══════════════════════════════════════════════════════════
+            let net = null,
+                curDs = "xor",
+                hiddenLayers = [4],
+                LR = 0.03,
+                speed = 10;
+            let epoch = 0,
+                running = false,
+                rafId = null;
+            let lossHist = [];
+            const HIST = 400,
+                GRES = 44,
+                GMIN = -2.3,
+                GMAX = 2.3;
+
+            // precompute grid coords
+            const gx0 = new Float64Array(GRES * GRES),
+                gx1 = new Float64Array(GRES * GRES);
+            for (let j = 0; j < GRES; j++)
+                for (let i = 0; i < GRES; i++) {
+                    gx0[j * GRES + i] = GMIN + (i / (GRES - 1)) * (GMAX - GMIN);
+                    gx1[j * GRES + i] = GMIN + (j / (GRES - 1)) * (GMAX - GMIN);
+                }
+
+            // canvases
+            const hc = document.getElementById("hc"),
+                hx = hc.getContext("2d");
+            const lc = document.getElementById("lc"),
+                lx = lc.getContext("2d");
+            const ac = document.getElementById("ac"),
+                ax = ac.getContext("2d");
+            const offscreen = document.createElement("canvas");
+            offscreen.width = GRES;
+            offscreen.height = GRES;
+            const ox = offscreen.getContext("2d");
+
+            // ═══════════════════════════════════════════════════════════
+            //  CORE CONTROLS
+            // ═══════════════════════════════════════════════════════════
+            function reset() {
+                stopTraining();
+                epoch = 0;
+                lossHist = [];
+                net = new JSNet(hiddenLayers, LR);
+                eid("stEp", "0");
+                eid("stLoss", "—");
+                eid("stAcc", "—");
+                eid("stMsg", "network reset — press play");
+                document.getElementById("stAcc").className = "stv";
+                render();
+            }
+
+            function startTraining() {
+                if (running) return;
+                if (!net) reset();
+                running = true;
+                eid("stMsg", "training…");
+                rafId = requestAnimationFrame(trainLoop);
+            }
+
+            function stopTraining() {
+                running = false;
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+                if (epoch > 0)
+                    eid("stMsg", "paused at epoch " + epoch.toLocaleString());
+            }
+
+            function trainLoop() {
+                if (!running) return;
+                const ds = DS[curDs];
+                let loss = 0;
+                for (let s = 0; s < speed; s++) {
+                    loss = net.train(ds);
+                    epoch++;
+                }
+                lossHist.push(loss);
+                if (lossHist.length > HIST) lossHist.shift();
+
+                const acc = net.accuracy(ds);
+                const accPct = Math.round(acc * 100);
+
+                eid("stEp", epoch.toLocaleString());
+                eid("stLoss", loss.toFixed(5));
+                const accEl = document.getElementById("stAcc");
+                accEl.textContent = accPct + "%";
+                accEl.className =
+                    "stv" +
+                    (accPct >= 90 ? " good" : accPct < 50 ? " bad" : "");
+
+                render();
+                rafId = requestAnimationFrame(trainLoop);
+            }
+
+            function eid(id, v) {
+                document.getElementById(id).textContent = v;
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            //  COLOR MAPPING
+            // ═══════════════════════════════════════════════════════════
+            // t=0 → warm (class 0), t=1 → teal (class 1), boundary ≈ dark
+            function mapColor(t) {
+                const bg = [9, 14, 20];
+                const c0 = [160, 55, 22],
+                    c1 = [30, 145, 100];
+                const s = Math.abs(t - 0.5) * 2; // 0 at boundary, 1 at extremes
+                const c = t < 0.5 ? c0 : c1;
+                return [
+                    (bg[0] + (c[0] - bg[0]) * s * 0.72) | 0,
+                    (bg[1] + (c[1] - bg[1]) * s * 0.72) | 0,
+                    (bg[2] + (c[2] - bg[2]) * s * 0.72) | 0,
+                ];
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            //  RENDER HEATMAP
+            // ═══════════════════════════════════════════════════════════
+            function renderHeatmap() {
+                const W = hc.clientWidth,
+                    H_ = hc.clientHeight;
+                if (!W || !H_) return;
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                if (hc.width !== W * dpr || hc.height !== H_ * dpr) {
+                    hc.width = W * dpr;
+                    hc.height = H_ * dpr;
+                    hx.resetTransform();
+                    hx.scale(dpr, dpr);
+                }
+
+                // fill background
+                hx.fillStyle = "#09121c";
+                hx.fillRect(0, 0, W, H_);
+
+                // grid predictions → ImageData
+                const preds = net
+                    ? net.predictGrid(gx0, gx1)
+                    : new Array(GRES * GRES).fill(0.5);
+                const id = ox.createImageData(GRES, GRES);
+                for (let i = 0; i < GRES * GRES; i++) {
+                    const [r, g, b] = mapColor(preds[i]);
+                    id.data[i * 4] = r;
+                    id.data[i * 4 + 1] = g;
+                    id.data[i * 4 + 2] = b;
+                    id.data[i * 4 + 3] = 255;
+                }
+                ox.putImageData(id, 0, 0);
+                hx.imageSmoothingEnabled = true;
+                hx.imageSmoothingQuality = "high";
+                hx.drawImage(offscreen, 0, 0, W, H_);
+
+                // coordinate transform helpers
+                const sx = (mx) => ((mx - GMIN) / (GMAX - GMIN)) * W;
+                const sy = (my) => (1 - (my - GMIN) / (GMAX - GMIN)) * H_;
+
+                // subtle grid lines
+                hx.strokeStyle = "rgba(18,30,50,.8)";
+                hx.lineWidth = 0.5;
+                for (let v = -2; v <= 2; v++) {
+                    hx.beginPath();
+                    hx.moveTo(sx(v), 0);
+                    hx.lineTo(sx(v), H_);
+                    hx.stroke();
+                    hx.beginPath();
+                    hx.moveTo(0, sy(v));
+                    hx.lineTo(W, sy(v));
+                    hx.stroke();
+                }
+
+                // axes
+                hx.strokeStyle = "rgba(46,64,96,.9)";
+                hx.lineWidth = 1;
+                hx.beginPath();
+                hx.moveTo(sx(0), 0);
+                hx.lineTo(sx(0), H_);
+                hx.stroke();
+                hx.beginPath();
+                hx.moveTo(0, sy(0));
+                hx.lineTo(W, sy(0));
+                hx.stroke();
+
+                // tick labels
+                hx.font = "8px monospace";
+                hx.fillStyle = "rgba(52,74,104,.9)";
+                hx.textAlign = "center";
+                for (let v = -2; v <= 2; v++) {
+                    if (v === 0) continue;
+                    hx.fillText(v, sx(v), Math.min(H_ - 3, sy(0) + 11));
+                    hx.textAlign = "right";
+                    hx.fillText(v, Math.max(20, sx(0) - 5), sy(v) + 3);
+                    hx.textAlign = "center";
+                }
+
+                // decision boundary region outline — draw a faint iso-contour at pred=0.5
+                // (just implied by the color transition, no extra work needed)
+
+                // data points
+                const ds = DS[curDs];
+                for (let i = 0; i < ds.x0.length; i++) {
+                    const px = sx(ds.x0[i]),
+                        py = sy(ds.x1[i]);
+                    const c1 = ds.y[i] === 1;
+                    const col = c1 ? "#5DCAA5" : "#D85A30";
+                    const glow = c1
+                        ? "rgba(93,202,165,.55)"
+                        : "rgba(216,90,48,.55)";
+
+                    hx.save();
+                    // outer ring
+                    hx.strokeStyle = col + "cc";
+                    hx.lineWidth = 1.5;
+                    hx.beginPath();
+                    hx.arc(px, py, 7, 0, Math.PI * 2);
+                    hx.stroke();
+                    // glow fill
+                    hx.fillStyle = col;
+                    hx.shadowBlur = 10;
+                    hx.shadowColor = glow;
+                    hx.beginPath();
+                    hx.arc(px, py, 3.5, 0, Math.PI * 2);
+                    hx.fill();
+                    hx.restore();
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            //  RENDER LOSS CHART
+            // ═══════════════════════════════════════════════════════════
+            function renderLoss() {
+                const W = lc.clientWidth || 155,
+                    H_ = 88;
+                lc.width = W;
+                lc.height = H_;
+                lx.fillStyle = "#09121c";
+                lx.fillRect(0, 0, W, H_);
+
+                // horizontal guidelines
+                lx.strokeStyle = "rgba(21,32,56,.9)";
+                lx.lineWidth = 0.5;
+                for (let i = 1; i < 4; i++) {
+                    const y = Math.round((i / 4) * H_) + 0.5;
+                    lx.beginPath();
+                    lx.moveTo(0, y);
+                    lx.lineTo(W, y);
+                    lx.stroke();
+                }
+
+                if (lossHist.length < 2) return;
+
+                const maxL = Math.max(...lossHist.slice(-120), 0.002);
+                const toY = (v) => H_ - Math.max(2, (v / maxL) * (H_ - 5)) - 2;
+                const toX = (i) => (i / (lossHist.length - 1)) * W;
+
+                // fill area
+                lx.beginPath();
+                for (let i = 0; i < lossHist.length; i++)
+                    i
+                        ? lx.lineTo(toX(i), toY(lossHist[i]))
+                        : lx.moveTo(0, toY(lossHist[0]));
+                lx.lineTo(W, H_);
+                lx.lineTo(0, H_);
+                lx.fillStyle = "rgba(93,202,165,.07)";
+                lx.fill();
+
+                // line
+                lx.beginPath();
+                for (let i = 0; i < lossHist.length; i++)
+                    i
+                        ? lx.lineTo(toX(i), toY(lossHist[i]))
+                        : lx.moveTo(0, toY(lossHist[0]));
+                lx.strokeStyle = "#5DCAA5";
+                lx.lineWidth = 1.5;
+                lx.lineJoin = "round";
+                lx.shadowBlur = 5;
+                lx.shadowColor = "rgba(93,202,165,.4)";
+                lx.stroke();
+                lx.shadowBlur = 0;
+
+                // current value label
+                const cur = lossHist[lossHist.length - 1];
+                lx.font = "8px monospace";
+                lx.fillStyle = "rgba(93,202,165,.65)";
+                lx.textAlign = "right";
+                lx.fillText(cur.toFixed(4), W - 3, 11);
+                // epoch count
+                lx.fillStyle = "rgba(52,74,104,.9)";
+                lx.textAlign = "left";
+                lx.fillText("ep " + epoch.toLocaleString(), 4, 11);
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            //  RENDER ARCHITECTURE
+            // ═══════════════════════════════════════════════════════════
+            function renderArch() {
+                const W = ac.clientWidth || 152,
+                    H_ = ac.clientHeight || 110;
+                if (!W || !H_) return;
+                ac.width = W;
+                ac.height = H_;
+                ax.fillStyle = "#09121c";
+                ax.fillRect(0, 0, W, H_);
+
+                const maxDisplay = 10;
+                const pad = 16;
+                // full layer list: input + all hidden + output
+                const layers = [2, ...hiddenLayers, 1];
+                const displayLayers = layers.map((n) =>
+                    Math.min(n, maxDisplay),
+                );
+                const nL = layers.length;
+
+                // x positions spread evenly
+                const xs = displayLayers.map(
+                    (_, i) => W * 0.12 + (i / (nL - 1)) * (W * 0.76),
+                );
+                const nodeR = 3;
+                const ny = (i, n) => ((i + 0.5) / n) * (H_ - pad);
+
+                // color per layer: input=muted, hidden=teal, output=warm
+                const colFor = (l) =>
+                    l === 0 ? "#6a84a8" : l === nL - 1 ? "#D85A30" : "#5DCAA5";
+                const glowFor = (l) =>
+                    l === 0
+                        ? "#6a84a880"
+                        : l === nL - 1
+                          ? "#D85A3080"
+                          : "#5DCAA580";
+
+                // get weights from JS net if available
+                let netW = null,
+                    netSizes = null;
+                if (net && net.weights) {
+                    const w = net.weights();
+                    if (w) {
+                        netW = w.W;
+                        netSizes = w.sizes;
+                    }
+                }
+
+                // draw connections
+                for (let l = 0; l < nL - 1; l++) {
+                    const nF = displayLayers[l],
+                        nT = displayLayers[l + 1];
+                    for (let f = 0; f < nF; f++) {
+                        for (let t = 0; t < nT; t++) {
+                            let alpha = 0.07,
+                                pos = true;
+                            if (netW && netW[l] && netSizes) {
+                                const fi = netSizes[l];
+                                const w = netW[l][t * fi + f] || 0;
+                                alpha = Math.min(
+                                    0.03 + Math.abs(w) * 0.15,
+                                    0.55,
+                                );
+                                pos = w >= 0;
+                            }
+                            ax.strokeStyle = pos
+                                ? `rgba(93,202,165,${alpha})`
+                                : `rgba(216,90,48,${alpha})`;
+                            ax.lineWidth = 0.7;
+                            ax.beginPath();
+                            ax.moveTo(xs[l], ny(f, nF));
+                            ax.lineTo(xs[l + 1], ny(t, nT));
+                            ax.stroke();
+                        }
+                    }
+                }
+
+                // draw nodes
+                for (let l = 0; l < nL; l++) {
+                    const n = displayLayers[l];
+                    const overflow = layers[l] > maxDisplay;
+                    const col = colFor(l),
+                        glow = glowFor(l);
+                    for (let i = 0; i < n; i++) {
+                        ax.fillStyle = col;
+                        ax.shadowBlur = 5;
+                        ax.shadowColor = glow;
+                        ax.beginPath();
+                        ax.arc(xs[l], ny(i, n), nodeR, 0, Math.PI * 2);
+                        ax.fill();
+                        ax.shadowBlur = 0;
+                    }
+                    if (overflow) {
+                        ax.font = "7px monospace";
+                        ax.fillStyle = "rgba(52,74,104,.8)";
+                        ax.textAlign = "center";
+                        ax.fillText(
+                            `+${layers[l] - maxDisplay}`,
+                            xs[l],
+                            ny(maxDisplay, maxDisplay + 1),
+                        );
+                    }
+                }
+
+                // layer labels
+                ax.font = "7.5px monospace";
+                ax.fillStyle = "rgba(52,74,104,.9)";
+                ax.textAlign = "center";
+                ax.fillText("in", xs[0], H_ - 2);
+                for (let l = 1; l < nL - 1; l++)
+                    ax.fillText(`${layers[l]}`, xs[l], H_ - 2);
+                ax.fillText("out", xs[nL - 1], H_ - 2);
+            }
+
+            function render() {
+                renderHeatmap();
+                renderLoss();
+                renderArch();
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            //  UI WIRING
+            // ═══════════════════════════════════════════════════════════
+            document.getElementById("playBtn").onclick = startTraining;
+            document.getElementById("stopBtn").onclick = stopTraining;
+            document.getElementById("resetBtn").onclick = reset;
+
+            document.querySelectorAll(".dsbtn").forEach((b) => {
+                b.onclick = () => {
+                    let wasRunning = running; // Remember if the engine was running
+                    document
+                        .querySelectorAll(".dsbtn")
+                        .forEach((x) => x.classList.remove("active"));
+                    b.classList.add("active");
+                    curDs = b.dataset.ds;
+                    const ds = DS[curDs];
+                    eid("stDs", `${ds.label} (${ds.pts} pts)`);
+
+                    reset(); // This automatically stops training
+                    if (wasRunning) startTraining(); // If it was running before, start it back up instantly!
+                };
+            });
+
+            document.getElementById("lrSl").oninput = function () {
+                LR = parseFloat((10 ** parseFloat(this.value)).toPrecision(2));
+                eid("lrLbl", LR.toFixed(3));
+                if (net) net.lr = LR;
+            };
+            function renderLayerSliders() {
+                const container = document.getElementById("layerSliders");
+                container.innerHTML = "";
+                eid("archLbl", hiddenLayers.join(" → "));
+
+                hiddenLayers.forEach((val, idx) => {
+                    const input = document.createElement("input");
+                    input.type = "range";
+                    input.min = 1;
+                    input.max = 16;
+                    input.step = 1;
+                    input.value = val;
+                    input.oninput = (e) => {
+                        let wasRunning = running; // Remember if the engine was running
+                        hiddenLayers[idx] = parseInt(e.target.value);
+                        eid("archLbl", hiddenLayers.join(" → "));
+
+                        reset(); // Rebuild the C engine
+                        if (wasRunning) startTraining(); // Instantly resume training!
+                    };
+                    container.appendChild(input);
+                });
+            }
+
+            document.getElementById("addLayerBtn").onclick = () => {
+                if (hiddenLayers.length < 4) {
+                    hiddenLayers.push(4);
+                    renderLayerSliders();
+                    reset();
+                }
+            };
+            document.getElementById("remLayerBtn").onclick = () => {
+                if (hiddenLayers.length > 1) {
+                    hiddenLayers.pop();
+                    renderLayerSliders();
+                    reset();
+                }
+            };
+
+            // Call this once to draw the initial slider!
+            renderLayerSliders();
+            document.getElementById("spdSl").oninput = function () {
+                speed = parseInt(this.value);
+                eid("spdLbl", speed + "/f");
+            };
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === " ") {
+                    e.preventDefault();
+                    running ? stopTraining() : startTraining();
+                }
+                if (e.key === "r" || e.key === "R") reset();
+            });
+            window.addEventListener("resize", render);
+
+            // ═══════════════════════════════════════════════════════════
+            //  WASM LOADER
+            // ═══════════════════════════════════════════════════════════
+            // Silently attempts to load net.js (Emscripten output).
+            // When present, swaps the JS net for the compiled C engine.
+            //
+            // Compile command:
+            //   emcc wasm_bridge.c src/*.c -Iinclude -lm \
+            //     -s EXPORTED_FUNCTIONS="['_init_network','_train_epoch','_predict_grid','_malloc','_free']" \
+            //     -s EXPORTED_RUNTIME_METHODS="['cwrap','HEAPF64']" \
+            //     -s ALLOW_MEMORY_GROWTH=1 \
+            //     -o net.js
+            //
+            // Then serve playground.html, net.js, net.wasm from the same directory.
+
+            window.Module = {
+                onRuntimeInitialized() {
+                    try {
+                        // init_network(num_layers, h1, h2, h3, h4, learning_rate, batch_size)
+                        const _init = Module.cwrap("init_network", null, [
+                            "number",
+                            "number",
+                            "number",
+                            "number",
+                            "number",
+                            "number",
+                            "number",
+                        ]);
+
+                        const _train = Module.cwrap("train_epoch", "number", [
+                            "number",
+                            "number",
+                            "number",
+                        ]);
+                        const _pred = Module.cwrap("predict_grid", null, [
+                            "number",
+                            "number",
+                            "number",
+                            "number",
+                        ]);
+
+                        // Allocate WASM heap buffers (max dataset size + full grid)
+                        const maxN = Math.max(
+                            ...Object.values(DS).map((d) => d.x0.length),
+                        );
+                        const N2 = GRES * GRES;
+                        const wx0 = Module._malloc(maxN * 8),
+                            wx1 = Module._malloc(maxN * 8),
+                            wy = Module._malloc(maxN * 8);
+                        const wgx0 = Module._malloc(N2 * 8),
+                            wgx1 = Module._malloc(N2 * 8),
+                            wgOut = Module._malloc(N2 * 8);
+
+                        // Write static grid coords once
+                        Module.HEAPF64.set(gx0, wgx0 / 8);
+                        Module.HEAPF64.set(gx1, wgx1 / 8);
+
+                        // WASM-backed net adapter — same interface as JSNet
+                        const wasmNet = {
+                            lr: LR,
+                            _init(layersArray, lr, batchSize) {
+                                const h1 = layersArray[0] || 0;
+                                const h2 = layersArray[1] || 0;
+                                const h3 = layersArray[2] || 0;
+                                const h4 = layersArray[3] || 0;
+                                _init(
+                                    layersArray.length,
+                                    h1,
+                                    h2,
+                                    h3,
+                                    h4,
+                                    lr,
+                                    batchSize,
+                                );
+                                this.lr = lr;
+                            },
+                            train(ds) {
+                                Module.HEAPF64.set(ds.x0, wx0 / 8);
+                                Module.HEAPF64.set(ds.x1, wx1 / 8);
+                                Module.HEAPF64.set(ds.y, wy / 8);
+                                return _train(wx0, wx1, wy);
+                            },
+                            predictGrid() {
+                                // uses pre-written grid buffers
+                                _pred(wgx0, wgx1, wgOut, N2);
+                                const out = new Array(N2);
+                                for (let i = 0; i < N2; i++)
+                                    out[i] = Module.HEAPF64[wgOut / 8 + i];
+                                return out;
+                            },
+                            accuracy(ds) {
+                                // reuse predictGrid-style call with dataset points
+                                const n = ds.x0.length;
+                                const px = Module._malloc(n * 8),
+                                    py = Module._malloc(n * 8),
+                                    po = Module._malloc(n * 8);
+                                Module.HEAPF64.set(ds.x0, px / 8);
+                                Module.HEAPF64.set(ds.x1, py / 8);
+                                _pred(px, py, po, n);
+                                let ok = 0;
+                                for (let i = 0; i < n; i++)
+                                    if (
+                                        Math.round(
+                                            Module.HEAPF64[po / 8 + i],
+                                        ) === ds.y[i]
+                                    )
+                                        ok++;
+                                Module._free(px);
+                                Module._free(py);
+                                Module._free(po);
+                                return ok / n;
+                            },
+                            weights() {
+                                return null;
+                            }, // weights not exposed from WASM
+                        };
+
+                        // Override reset to use WASM
+                        const origReset = reset;
+                        window.reset = function () {
+                            stopTraining();
+                            epoch = 0;
+                            lossHist = [];
+                            const ds = DS[curDs];
+                            wasmNet._init(hiddenLayers, LR, ds.x0.length);
+                            net = wasmNet;
+                            eid("stEp", "0");
+                            eid("stLoss", "—");
+                            eid("stAcc", "—");
+                            eid("stMsg", "network reset (wasm) — press play");
+                            document.getElementById("stAcc").className = "stv";
+                            render();
+                        };
+
+                        document.getElementById("wasmBadge").textContent =
+                            "WASM: ON";
+                        document
+                            .getElementById("wasmBadge")
+                            .classList.add("on");
+                        eid("stEng", "c engine");
+
+                        reset(); // re-init with WASM net
+                    } catch (e) {
+                        console.warn(
+                            "[playground] WASM init failed, staying on JS net:",
+                            e,
+                        );
+                    }
+                },
+            };
+
+            (() => {
+                const s = document.createElement("script");
+                s.src = "/build/net.js";
+                s.onerror = () => {}; // net.js absent — JS fallback stays active
+                document.head.appendChild(s);
+            })();
+
+            // ═══════════════════════════════════════════════════════════
+            //  BOOT
+            // ═══════════════════════════════════════════════════════════
+            reset();
+        </script>
+    </body>
+</html>
