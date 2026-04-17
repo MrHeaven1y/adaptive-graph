@@ -1292,7 +1292,7 @@
 
             (() => {
                 const s = document.createElement("script");
-                s.src = "/build/net.js";
+                s.src = "./net.js";
                 s.onerror = () => {}; // net.js absent — JS fallback stays active
                 document.head.appendChild(s);
             })();
