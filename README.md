@@ -70,3 +70,6 @@ adaptive-graph/
 
 **Dibyendu Mukherjee**
 * Contact: dibyendumukherjee916@gmail.con
+
+
+<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/39524052-aaf2-4df9-a5b0-b73a3d334cf2" />
