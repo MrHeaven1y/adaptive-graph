@@ -1,5 +1,3 @@
-Here is the complete and updated `README.md` for your repository. It includes all the details about your C backend, the WebAssembly bridge, the playground visualization, and a special shoutout to the fun morphing extra you added.
-
 ***
 
 # Vector Playground
@@ -71,5 +69,6 @@ adaptive-graph/
 **Dibyendu Mukherjee**
 * Contact: dibyendumukherjee916@gmail.con
 
+Live Demo:  https://mrheaven1y.github.io/adaptive-graph/
 
 <img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/39524052-aaf2-4df9-a5b0-b73a3d334cf2" />
