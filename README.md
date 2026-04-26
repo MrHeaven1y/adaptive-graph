@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ***
+=======
+<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/75c6257b-f2f8-4f35-b919-543c84b5d699" />
+
+Live Demo:  https://mrheaven1y.github.io/adaptive-graph/
+>>>>>>> f6f4d26f195d6c3f84a14741399ee9f69743e8e8
 
 # Vector Playground (C + WebAssembly Neural Network Visualizer)
 
@@ -94,6 +100,9 @@ adaptive-graph/
 
 **Dibyendu Mukherjee**
 * Contact: dibyendumukherjee916@gmail.con
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> f6f4d26f195d6c3f84a14741399ee9f69743e8e8
