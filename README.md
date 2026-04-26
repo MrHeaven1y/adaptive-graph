@@ -1,5 +1,3 @@
-***
-
 # Vector Playground (C + WebAssembly Neural Network Visualizer)
 
 An interactive neural network playground powered by a custom-built 
