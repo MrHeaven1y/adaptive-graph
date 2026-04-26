@@ -5,7 +5,11 @@ autograd and tensor engine written in C and compiled to WebAssembly.
 
 Recreates core ideas behind TensorFlow Playground — but from scratch at the systems level.
 
-<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/39524052-aaf2-4df9-a5b0-b73a3d334cf2" />
+# Some Visuals:
+1. <img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/1d61c52b-dcfc-448d-867c-83de65930e3d" />
+2. <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/3ecd1870-45d1-46aa-a639-218825ad1e38" />
+3. <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/f95f347e-47b4-49fa-89fa-433b3812b0db" />
+4. <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/f2efac1a-d0ae-43b1-9e03-bb03724b8a6d" />
 
 ## Why this project matters
 
