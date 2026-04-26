@@ -5,11 +5,13 @@ autograd and tensor engine written in C and compiled to WebAssembly.
 
 Recreates core ideas behind TensorFlow Playground — but from scratch at the systems level.
 
+# Live Demo: https://mrheaven1y.github.io/adaptive-graph/
+
 # Some Visuals:
-1. <img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/1d61c52b-dcfc-448d-867c-83de65930e3d" />
-2. <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/3ecd1870-45d1-46aa-a639-218825ad1e38" />
-3. <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/f95f347e-47b4-49fa-89fa-433b3812b0db" />
-4. <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/f2efac1a-d0ae-43b1-9e03-bb03724b8a6d" />
+1. Demo Spiral: <img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/1d61c52b-dcfc-448d-867c-83de65930e3d" />
+2. Learned Checker Pattern: <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/3ecd1870-45d1-46aa-a639-218825ad1e38" />
+3. Learned Circle Pattern: <img width="1490" height="720" alt="Image" src="https://github.com/user-attachments/assets/f2efac1a-d0ae-43b1-9e03-bb03724b8a6d" />
+4. Demo Live: <img width="800" height="386" alt="Image" src="https://github.com/user-attachments/assets/7ae3edd2-08c3-4c8a-a66c-bdfa129a6fff" />
 
 ## Why this project matters
 
