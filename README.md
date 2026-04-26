@@ -1,10 +1,24 @@
-Here is the complete and updated `README.md` for your repository. It includes all the details about your C backend, the WebAssembly bridge, the playground visualization, and a special shoutout to the fun morphing extra you added.
-
 ***
 
-# Vector Playground
+# Vector Playground (C + WebAssembly Neural Network Visualizer)
 
-Vector Playground is an interactive, web-based visualizer for a custom-built, bare-metal C autograd and tensor engine. By compiling the core C operations to WebAssembly (Wasm), this project achieves near-native execution speeds for tensor mathematics and neural network training directly within the browser.
+An interactive neural network playground powered by a custom-built 
+autograd and tensor engine written in C and compiled to WebAssembly.
+
+Recreates core ideas behind TensorFlow Playground — but from scratch at the systems level.
+
+<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/39524052-aaf2-4df9-a5b0-b73a3d334cf2" />
+
+## Why this project matters
+
+Most ML tools abstract away the internals.
+
+This project exposes:
+- how computation graphs are built
+- how gradients flow
+- how training actually happens
+
+All powered by a low-level C backend running in the browser via WebAssembly.
 
 ## 🚀 Overview
 
@@ -13,7 +27,17 @@ This repository bridges a low-level C architecture with a sleek, reactive HTML/J
 ### Core Components
 * **`playground.html`**: The main frontend visualization engine. It provides the UI for tweaking learning rates, adding/removing layers, and visualizing the decision boundary and loss curve. It falls back to a vanilla JS engine if the Wasm binary isn't found.
 * **`wasm_bridge.c`**: The Emscripten bridge that exposes the C engine's functions (like `init_network`, `train_epoch`, and `predict_grid`) to JavaScript. It also manages Wasm memory allocations to prevent leaks during dynamic layer creation.
-* **`morph_graph_animator.html`**: A standalone interactive graph morphing tool. **Note:** This file is completely random and has nothing to do with the core tensor engine project! It was just added to the repository for fun so you can click around and watch mathematical functions morph into curves.
+* **`morph_graph_animator.html`**: A standalone interactive graph morphing tool. It was just added to the repository for fun so you can click around and watch mathematical functions morph into curves.
+
+## Architecture
+
+Frontend (JS/HTML)
+        ↓
+WASM Bridge (Emscripten)
+        ↓
+C Autograd Engine
+        ↓
+Tensor Ops + Graph Execution
 
 ## 🧠 Architecture Notes
 
@@ -72,4 +96,4 @@ adaptive-graph/
 * Contact: dibyendumukherjee916@gmail.con
 
 
-<img width="1920" height="928" alt="Image" src="https://github.com/user-attachments/assets/39524052-aaf2-4df9-a5b0-b73a3d334cf2" />
+
